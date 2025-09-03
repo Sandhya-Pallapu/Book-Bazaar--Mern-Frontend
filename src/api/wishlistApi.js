@@ -1,6 +1,7 @@
 import axios from 'axios';
 
-const API = '/api/user/wishlist';
+const API = ' process.env.REACT_APP_API_URL, 
+  withCredentials: true,';
 
 export const fetchWishlist = async () => {
   const res = await axios.get(API);
