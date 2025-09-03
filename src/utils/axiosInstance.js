@@ -1,9 +1,19 @@
 
-import axios from 'axios';
+import axios from "axios";
 
 const instance = axios.create({
-  baseURL: 'https://book-bazaar-mern-backend.onrender.com/',
-  withCredentials: true, 
+  baseURL: process.env.REACT_APP_API_URL || "https://book-bazaar-mern-backend.onrender.com/api",
+  withCredentials: true,
+});
+
+
+instance.interceptors.request.use((req) => {
+  const token = localStorage.getItem("token");
+  if (token) {
+    req.headers.Authorization = `Bearer ${token}`;
+  }
+  return req;
 });
 
 export default instance;
+
