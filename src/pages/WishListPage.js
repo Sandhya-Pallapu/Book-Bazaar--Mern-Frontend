@@ -38,7 +38,7 @@ const WishListPage = () => {
 
   const removeFromWishlist = async (bookId) => {
     try {
-      await axios.delete(`http://localhost:5000/api/wishlist/remove/${bookId}`, {
+      await axios.delete(`https://book-bazaar-mern-backend.onrender.com/api/wishlist/remove/${bookId}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
