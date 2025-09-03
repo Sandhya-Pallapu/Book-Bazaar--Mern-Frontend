@@ -19,11 +19,6 @@ import EditBookForm from './pages/EditBookForm';
 import PostBookPage from './pages/PostBook';
 import ProfilePage from './pages/ProfilePage';
 
-
-
-
-
-
 function App() {
   return (
     <AuthProvider>
