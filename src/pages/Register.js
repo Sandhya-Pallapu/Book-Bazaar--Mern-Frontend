@@ -8,11 +8,11 @@ const Register = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const trimmedName = name.trim();
+    const trimmedUsername = name.trim();
     const trimmedEmail = email.trim();
     const trimmedPassword = password.trim();
 
-    if (!trimmedName || !trimmedEmail || !trimmedPassword) {
+    if (!trimmedUsername || !trimmedEmail || !trimmedPassword) {
       alert('Please fill in all fields');
       return;
     }
@@ -24,7 +24,7 @@ const Register = () => {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            name: trimmedName,
+            username: trimmedUsername,
             email: trimmedEmail,
             password: trimmedPassword,
           }),
@@ -34,16 +34,16 @@ const Register = () => {
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.error || 'Something went wrong');
+        throw new Error(data.message || 'Something went wrong');
       }
 
       alert('Registration successful!');
       console.log('Registered user:', data);
-      // Optionally, store token in localStorage
       localStorage.setItem('token', data.token);
+
     } catch (error) {
-      alert('Error: ' + error.message);
-      console.error('Registration error:', error.message);
+      alert('Registration error: ' + error.message);
+      console.error('Registration error:', error);
     }
   };
 
@@ -53,14 +53,14 @@ const Register = () => {
         <h2 className="text-2xl font-bold mb-6 text-center">Register</h2>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label>Name:</label>
+            <label>Username:</label>
             <input
               type="text"
               value={name}
               onChange={(e) => setName(e.target.value)}
               required
               className="w-full border p-2 rounded"
-              placeholder="Your name"
+              placeholder="Your username"
             />
           </div>
           <div>
@@ -98,6 +98,7 @@ const Register = () => {
 };
 
 export default Register;
+
 
 
 
