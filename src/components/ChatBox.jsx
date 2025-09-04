@@ -48,22 +48,24 @@ const ChatBox = ({ senderEmail, receiverEmail }) => {
     }
   };
 
-  // Delete message
-  const deleteMessage = async (id) => {
-    try {
-      await axios.delete(
-        `https://book-bazaar-mern-backend.onrender.com/api/messages/${id}`,
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      );
-      setMessages(messages.filter((msg) => msg._id !== id));
-      toast.success('Message deleted');
-    } catch (err) {
-      console.error('Failed to delete message:', err);
-      toast.error('Failed to delete message.');
-    }
-  };
+const deleteMessage = async (id) => {
+  try {
+    const res = await axios.delete(
+      `https://book-bazaar-mern-backend.onrender.com/api/messages/${id}`,
+      {
+        headers: { Authorization: `Bearer ${token}` },
+      }
+    );
+    console.log('Delete response:', res.data);
+
+    setMessages(prev => prev.filter(msg => msg._id !== id));
+    toast.success('Message deleted successfully!');
+  } catch (err) {
+    console.error('Failed to delete message:', err.response || err);
+    toast.error(err.response?.data?.message || 'Failed to delete message.');
+  }
+};
+
 
   return (
     <div className="space-y-4">
