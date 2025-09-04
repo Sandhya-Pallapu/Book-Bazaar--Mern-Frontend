@@ -16,7 +16,7 @@ const PostBook = () => {
     sellerEmail: '',
   });
 
-  
+  // Automatically set seller info when user is loaded
   useEffect(() => {
     if (user) {
       setFormData((prev) => ({
@@ -36,20 +36,31 @@ const PostBook = () => {
 
     try {
       const response = await axios.post(
-        '/api/books/create',
+        `${process.env.REACT_APP_API_URL}/books`, // Correct backend URL
         formData,
         {
           headers: {
             Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json',
           },
         }
       );
 
-      console.log(' Book posted:', response.data);
+      console.log('Book posted:', response.data);
       alert('Book posted successfully!');
+      setFormData({
+        title: '',
+        author: '',
+        genre: '',
+        condition: '',
+        price: '',
+        image: '',
+        sellerName: user.name || '',
+        sellerEmail: user.email || '',
+      });
     } catch (error) {
-      console.error(' Error posting book:', error);
-      alert('Failed to post book. Try again.');
+      console.error('Error posting book:', error.response || error.message);
+      alert('Failed to post book. Please check your input and try again.');
     }
   };
 
@@ -66,7 +77,6 @@ const PostBook = () => {
           className="w-full p-2 border rounded"
           required
         />
-
         <input
           type="text"
           name="author"
@@ -76,7 +86,6 @@ const PostBook = () => {
           className="w-full p-2 border rounded"
           required
         />
-
         <input
           type="text"
           name="genre"
@@ -86,7 +95,6 @@ const PostBook = () => {
           className="w-full p-2 border rounded"
           required
         />
-
         <input
           type="text"
           name="condition"
@@ -96,7 +104,6 @@ const PostBook = () => {
           className="w-full p-2 border rounded"
           required
         />
-
         <input
           type="number"
           name="price"
@@ -106,7 +113,6 @@ const PostBook = () => {
           className="w-full p-2 border rounded"
           required
         />
-
         <input
           type="text"
           name="image"
@@ -115,28 +121,6 @@ const PostBook = () => {
           onChange={handleChange}
           className="w-full p-2 border rounded"
         />
-
-        
-        <input
-          type="text"
-          name="sellerName"
-          placeholder="Your Name"
-          value={formData.sellerName}
-          onChange={handleChange}
-          className="w-full p-2 border rounded"
-          required
-        />
-
-        <input
-          type="email"
-          name="sellerEmail"
-          placeholder="Your Email"
-          value={formData.sellerEmail}
-          onChange={handleChange}
-          className="w-full p-2 border rounded"
-          required
-        />
-
         <button
           type="submit"
           className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-yellow-700"
@@ -149,3 +133,4 @@ const PostBook = () => {
 };
 
 export default PostBook;
+
