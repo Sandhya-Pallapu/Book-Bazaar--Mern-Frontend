@@ -71,7 +71,7 @@ const Register = () => {
               onChange={(e) => setEmail(e.target.value)}
               required
               className="w-full border p-2 rounded"
-              placeholder="you@example.com"
+              placeholder="you@gmail.com"
             />
           </div>
           <div>
