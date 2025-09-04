@@ -8,28 +8,39 @@ const Register = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    try {
-      const response = await fetch('https://book-bazaar-mern-backend.onrender.com/api/users/register', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ name, email, password }),
-      });
+    const trimmedName = name.trim();
+    const trimmedEmail = email.trim();
+    const trimmedPassword = password.trim();
 
-      const contentType = response.headers.get('content-type');
-      if (!contentType || !contentType.includes('application/json')) {
-        throw new Error('Server did not return valid JSON');
-      }
+    if (!trimmedName || !trimmedEmail || !trimmedPassword) {
+      alert('Please fill in all fields');
+      return;
+    }
+
+    try {
+      const response = await fetch(
+        'https://book-bazaar-mern-backend.onrender.com/api/users/register',
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            name: trimmedName,
+            email: trimmedEmail,
+            password: trimmedPassword,
+          }),
+        }
+      );
 
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.message || 'Something went wrong');
+        throw new Error(data.error || 'Something went wrong');
       }
 
       alert('Registration successful!');
       console.log('Registered user:', data);
+      // Optionally, store token in localStorage
+      localStorage.setItem('token', data.token);
     } catch (error) {
       alert('Error: ' + error.message);
       console.error('Registration error:', error.message);
@@ -87,5 +98,6 @@ const Register = () => {
 };
 
 export default Register;
+
 
 
