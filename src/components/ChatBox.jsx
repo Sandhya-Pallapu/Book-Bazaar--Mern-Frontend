@@ -19,7 +19,7 @@ const ChatBox = ({ senderEmail, receiverEmail }) => {
       );
       setMessages(res.data || []);
     } catch (err) {
-      console.error('Failed to fetch messages:', err);
+      console.error('Failed to fetch messages:', err.response?.data || err.message);
       toast.error('Failed to load messages.');
     }
   };
@@ -28,7 +28,7 @@ const ChatBox = ({ senderEmail, receiverEmail }) => {
     if (senderEmail && receiverEmail) fetchMessages();
   }, [senderEmail, receiverEmail]);
 
-  // Send message
+  // Send a new message
   const sendMessage = async () => {
     if (!content.trim()) return;
 
@@ -36,36 +36,45 @@ const ChatBox = ({ senderEmail, receiverEmail }) => {
       await axios.post(
         'https://book-bazaar-mern-backend.onrender.com/api/messages',
         { senderEmail, receiverEmail, content },
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
+        { headers: { Authorization: `Bearer ${token}` } }
       );
       setContent('');
       fetchMessages();
     } catch (err) {
-      console.error('Failed to send message:', err);
+      console.error('Failed to send message:', err.response?.data || err.message);
       toast.error('Failed to send message.');
     }
   };
 
-const deleteMessage = async (id) => {
-  try {
-    const res = await axios.delete(
-      `https://book-bazaar-mern-backend.onrender.com/api/messages/${id}`,
-      {
-        headers: { Authorization: `Bearer ${token}` },
-      }
-    );
-    console.log('Delete response:', res.data);
+  // Delete a single message
+  const deleteMessage = async (id) => {
+    try {
+      const res = await axios.delete(
+        `https://book-bazaar-mern-backend.onrender.com/api/messages/${id}`,
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      setMessages(prev => prev.filter(msg => msg._id !== id));
+      toast.success(res.data.message || 'Message deleted successfully!');
+    } catch (err) {
+      console.error('Failed to delete message:', err.response?.data || err.message);
+      toast.error(err.response?.data?.error || 'Failed to delete message.');
+    }
+  };
 
-    setMessages(prev => prev.filter(msg => msg._id !== id));
-    toast.success('Message deleted successfully!');
-  } catch (err) {
-    console.error('Failed to delete message:', err.response || err);
-    toast.error(err.response?.data?.message || 'Failed to delete message.');
-  }
-};
-
+  // Delete entire conversation
+  const deleteConversation = async () => {
+    try {
+      const res = await axios.delete(
+        `https://book-bazaar-mern-backend.onrender.com/api/messages/conversation/${senderEmail}/${receiverEmail}`,
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      setMessages([]);
+      toast.success(res.data.message || 'Conversation deleted successfully!');
+    } catch (err) {
+      console.error('Failed to delete conversation:', err.response?.data || err.message);
+      toast.error(err.response?.data?.error || 'Failed to delete conversation.');
+    }
+  };
 
   return (
     <div className="space-y-4">
@@ -96,6 +105,7 @@ const deleteMessage = async (id) => {
           ))
         )}
       </div>
+
       <div className="flex gap-2">
         <input
           className="border p-2 flex-1 rounded"
@@ -103,8 +113,17 @@ const deleteMessage = async (id) => {
           onChange={(e) => setContent(e.target.value)}
           placeholder="Type your message..."
         />
-        <button onClick={sendMessage} className="bg-blue-600 text-white px-4 py-2 rounded">
+        <button
+          onClick={sendMessage}
+          className="bg-blue-600 text-white px-4 py-2 rounded"
+        >
           Send
+        </button>
+        <button
+          onClick={deleteConversation}
+          className="bg-red-600 text-white px-4 py-2 rounded"
+        >
+          Delete Conversation
         </button>
       </div>
     </div>
@@ -112,5 +131,6 @@ const deleteMessage = async (id) => {
 };
 
 export default ChatBox;
+
 
 
