@@ -1,7 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import axios from 'axios';
 
-
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
@@ -17,7 +16,6 @@ export const AuthProvider = ({ children }) => {
     }
   });
 
- 
   useEffect(() => {
     const storedUser = localStorage.getItem('user');
     if (storedUser === 'undefined') {
@@ -25,43 +23,38 @@ export const AuthProvider = ({ children }) => {
     }
   }, []);
 
-
-const login = async (email, password) => {
-  try {
-    if (typeof email !== 'string' || typeof password !== 'string') {
-      throw new Error('Email and password must be strings');
-    }
-
-    console.log(' login() called with:', email, password);
-
-    const res = await axios.post(
-      "https://book-bazaar-mern-backend.onrender.com/users/login",
-      {
-        email: email.trim(),
-        password: password.trim(),
-      },
-      {
-        headers: {
-          'Content-Type': 'application/json',
-        },
+  const login = async (email, password) => {
+    try {
+      if (typeof email !== 'string' || typeof password !== 'string') {
+        throw new Error('Email and password must be strings');
       }
-    );
 
-    const { token, user } = res.data;
+      console.log('login() called with:', email, password);
 
-    if (token) {
-      setToken(token);
-      setUser(user);
-      localStorage.setItem('token', token);
-      localStorage.setItem('user', JSON.stringify(user));
-    } else {
-      throw new Error('Login failed: token not received');
+     
+      const res = await axios.post(
+        `${process.env.REACT_APP_API_URL}/auth/login`,
+        { email: email.trim(), password: password.trim() },
+        { headers: { 'Content-Type': 'application/json' } }
+      );
+
+      const { token, user } = res.data;
+
+      if (token) {
+        setToken(token);
+        setUser(user);
+        localStorage.setItem('token', token);
+        localStorage.setItem('user', JSON.stringify(user));
+      } else {
+        throw new Error('Login failed: token not received');
+      }
+
+      return { token, user }; // return data for immediate use
+    } catch (err) {
+      console.error('Login error:', err.response?.data || err.message);
+      throw err;
     }
-  } catch (err) {
-    console.error(' Login error:', err.response?.data || err.message);
-    throw err;
-  }
-};
+  };
 
   const logout = () => {
     setToken('');
@@ -76,7 +69,6 @@ const login = async (email, password) => {
     </AuthContext.Provider>
   );
 };
-
 
 export const useAuth = () => useContext(AuthContext);
 
