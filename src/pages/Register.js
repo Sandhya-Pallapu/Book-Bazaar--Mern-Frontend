@@ -9,7 +9,7 @@ const Register = () => {
     e.preventDefault();
 
     try {
-      const response = await fetch('https://book-bazaar-mern-backend.onrender.com/api/auth/register', {
+      const response = await fetch('https://book-bazaar-mern-backend.onrender.com/api/users/register', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
