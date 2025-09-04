@@ -9,24 +9,23 @@ const AdminDashboard = () => {
   const [books, setBooks] = useState([]);
   const [editBook, setEditBook] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
 
+  const backendURL = 'https://book-bazaar-mern-backend.onrender.com';
   const headers = { Authorization: `Bearer ${token}` };
 
+  // Fetch users and books
   const fetchData = async () => {
     setLoading(true);
-    setError('');
     try {
       const [usersRes, booksRes] = await Promise.all([
-        axios.get('/api/admin/users', { headers }),
-        axios.get('/api/admin/books', { headers }),
+        axios.get(`${backendURL}/api/admin/users`, { headers }),
+        axios.get(`${backendURL}/api/admin/books`, { headers }),
       ]);
 
-      setUsers(Array.isArray(usersRes.data) ? usersRes.data : usersRes.data.users || []);
-      setBooks(Array.isArray(booksRes.data) ? booksRes.data : booksRes.data.books || []);
+      setUsers(usersRes.data || []);
+      setBooks(booksRes.data || []);
     } catch (err) {
-      console.error('Fetch error:', err);
-      setError('Failed to fetch data. Please try again later.');
+      console.error('Error fetching admin data:', err);
       setUsers([]);
       setBooks([]);
     } finally {
@@ -34,14 +33,11 @@ const AdminDashboard = () => {
     }
   };
 
-  useEffect(() => {
-    if (token) fetchData();
-  }, [token]);
-
+  // Delete user
   const handleDeleteUser = async (userId) => {
     if (!window.confirm('Are you sure you want to delete this user?')) return;
     try {
-      await axios.delete(`/api/admin/users/${userId}`, { headers });
+      await axios.delete(`${backendURL}/api/admin/users/${userId}`, { headers });
       setUsers((prev) => prev.filter((user) => user._id !== userId));
     } catch (err) {
       console.error('Delete user error:', err);
@@ -49,10 +45,11 @@ const AdminDashboard = () => {
     }
   };
 
+  // Delete book
   const handleDeleteBook = async (bookId) => {
     if (!window.confirm('Delete this book?')) return;
     try {
-      await axios.delete(`/api/admin/books/${bookId}`, { headers });
+      await axios.delete(`${backendURL}/api/admin/books/${bookId}`, { headers });
       setBooks((prev) => prev.filter((book) => book._id !== bookId));
     } catch (err) {
       console.error('Delete book error:', err);
@@ -60,13 +57,15 @@ const AdminDashboard = () => {
     }
   };
 
+  // Open edit book modal
   const handleUpdateBook = (book) => {
     setEditBook(book);
   };
 
+  // Submit updated book data
   const handleBookUpdateSubmit = async (updatedData) => {
     try {
-      await axios.put(`/api/admin/books/${editBook._id}`, updatedData, { headers });
+      await axios.put(`${backendURL}/api/admin/books/${editBook._id}`, updatedData, { headers });
       setBooks((prev) =>
         prev.map((book) => (book._id === editBook._id ? { ...book, ...updatedData } : book))
       );
@@ -77,20 +76,28 @@ const AdminDashboard = () => {
     }
   };
 
-  if (loading) return <p className="p-6">Loading admin dashboard...</p>;
-  if (error) return <p className="p-6 text-red-500">{error}</p>;
+  useEffect(() => {
+    if (token) fetchData();
+  }, [token]);
+
+  if (loading) {
+    return <p className="text-center mt-10">Loading dashboard...</p>;
+  }
 
   return (
-    <div className="p-6">
+    <div className="p-6 max-w-5xl mx-auto">
       <h1 className="text-3xl font-bold mb-6">Admin Dashboard</h1>
 
+      {/* Users Section */}
       <div className="bg-white p-4 rounded shadow mb-6">
-        <h3 className="text-xl font-semibold mb-2">Users ({users?.length || 0})</h3>
-        {users?.length > 0 ? (
+        <h3 className="text-xl font-semibold mb-2">Users ({users.length})</h3>
+        {users.length === 0 ? (
+          <p>No users found.</p>
+        ) : (
           <ul className="space-y-2">
             {users.map((user) => (
               <li key={user._id} className="flex justify-between items-center border-b pb-1">
-                <span>{user.username || user.name || 'Unknown'} - {user.email}</span>
+                <span>{user.name || user.username} - {user.email}</span>
                 <button
                   className="bg-red-500 text-white px-3 py-1 rounded"
                   onClick={() => handleDeleteUser(user._id)}
@@ -100,20 +107,21 @@ const AdminDashboard = () => {
               </li>
             ))}
           </ul>
-        ) : (
-          <p>No users found.</p>
         )}
       </div>
 
+      {/* Books Section */}
       <div className="bg-white p-4 rounded shadow">
-        <h3 className="text-xl font-semibold mb-2">Books ({books?.length || 0})</h3>
-        {books?.length > 0 ? (
+        <h3 className="text-xl font-semibold mb-2">Books ({books.length})</h3>
+        {books.length === 0 ? (
+          <p>No books found.</p>
+        ) : (
           <ul className="space-y-2">
             {books.map((book) => (
               <li key={book._id} className="border-b pb-2">
                 <div className="flex justify-between items-center">
                   <div>
-                    <strong>{book.title}</strong> by {book.author || 'Unknown'} — ₹{book.price || 0}
+                    <strong>{book.title}</strong> by {book.author} — ₹{book.price}
                   </div>
                   <div className="space-x-2">
                     <button
@@ -133,11 +141,10 @@ const AdminDashboard = () => {
               </li>
             ))}
           </ul>
-        ) : (
-          <p>No books found.</p>
         )}
       </div>
 
+      {/* Edit Book Modal */}
       {editBook && (
         <BookModal
           initialData={editBook}
@@ -150,7 +157,6 @@ const AdminDashboard = () => {
 };
 
 export default AdminDashboard;
-
 
 
 
