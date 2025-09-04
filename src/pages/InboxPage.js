@@ -4,37 +4,53 @@ import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 
 const InboxPage = () => {
-  const { user } = useAuth();
+  const { user, token } = useAuth();
   const [inbox, setInbox] = useState([]);
   const navigate = useNavigate();
+  const BACKEND_URL = process.env.REACT_APP_API_URL; // use env
 
   const fetchInbox = async () => {
+    if (!user?.email) return;
+
     try {
-      const res = await axios.get(`/api/messages/inbox/${user.email}`);
-      console.log('Fetched Inbox:', res.data);
+      const res = await axios.get(`${BACKEND_URL}/messages/inbox/${user.email}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (!Array.isArray(res.data)) {
+        console.error('Inbox response is not an array:', res.data);
+        setInbox([]);
+        return;
+      }
+
       setInbox(res.data);
     } catch (err) {
-      console.error('Failed to load inbox:', err);
+      console.error('Failed to load inbox:', err.response?.data || err.message);
+      setInbox([]);
     }
   };
 
   const handleDeleteConversation = async (contactEmail) => {
     if (!window.confirm(`Delete conversation with ${contactEmail}?`)) return;
     try {
-      await axios.delete(`/api/messages/conversation/${user.email}/${contactEmail}`);
+      await axios.delete(`${BACKEND_URL}/messages/conversation/${user.email}/${contactEmail}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
       setInbox(inbox.filter(item => item.email !== contactEmail));
     } catch (err) {
-      console.error('Delete failed:', err);
+      console.error('Delete failed:', err.response?.data || err.message);
     }
   };
 
   const openChat = (email, name) => {
-    const safeName = name || email.split('@')[0]; // fallback if name is undefined
+    const safeName = name || email.split('@')[0]; // fallback
     navigate(`/chat/${email}/${encodeURIComponent(safeName)}`);
   };
 
   useEffect(() => {
-    if (user?.email) fetchInbox();
+    fetchInbox();
   }, [user]);
 
   return (
@@ -45,12 +61,13 @@ const InboxPage = () => {
       ) : (
         <ul className="space-y-3">
           {inbox.map((item) => {
-            const displayName = item.name || item.email.split('@')[0]; // fallback
+            const displayName = item.name || item.email.split('@')[0];
+            const lastMessage = item.lastMessage || 'No messages yet.';
             return (
               <li key={item.email} className="bg-white shadow-md rounded p-4 flex justify-between items-center">
                 <div className="cursor-pointer w-full">
                   <p className="font-semibold">{displayName} ({item.email})</p>
-                  <p className="text-gray-600 text-sm truncate">{item.lastMessage}</p>
+                  <p className="text-gray-600 text-sm truncate">{lastMessage}</p>
                 </div>
                 <div className="flex items-center space-x-4 ml-4">
                   <button
@@ -76,3 +93,4 @@ const InboxPage = () => {
 };
 
 export default InboxPage;
+
