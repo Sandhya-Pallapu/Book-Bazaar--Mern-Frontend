@@ -18,7 +18,8 @@ const Home = () => {
 
   const fetchBooks = async () => {
     try {
-      const res = await axios.get("https://book-bazaar-mern-backend.onrender.com/api/books");
+      const res = await axios.get(`${process.env.REACT_APP_API_URL}/books`);
+
 
       // Make sure we always get an array
       const booksArray = Array.isArray(res.data) ? res.data : res.data.books || [];
