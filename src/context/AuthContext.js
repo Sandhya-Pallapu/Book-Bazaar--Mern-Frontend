@@ -32,11 +32,12 @@ export const AuthProvider = ({ children }) => {
       console.log('login() called with:', email, password);
 
      
-      const res = await axios.post(
-        `${process.env.REACT_APP_API_URL}/auth/login`,
-        { email: email.trim(), password: password.trim() },
-        { headers: { 'Content-Type': 'application/json' } }
-      );
+     const res = await axios.post(
+  "https://book-bazaar-mern-backend.onrender.com/api/users/login",
+  { email: email.trim(), password: password.trim() },
+  { headers: { 'Content-Type': 'application/json' } }
+);
+
 
       const { token, user } = res.data;
 
