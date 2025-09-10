@@ -15,16 +15,19 @@ const EditBookPage = () => {
     price: '',
     image: '',
   });
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchBook = async () => {
       try {
         const res = await axios.get(`/api/books/${id}`, {
-          headers: { Authorization: `Bearer ${token}` }
+          headers: { Authorization: `Bearer ${token}` },
         });
         setFormData(res.data);
       } catch (err) {
         console.error('Error fetching book:', err);
+      } finally {
+        setLoading(false);
       }
     };
     fetchBook();
@@ -33,7 +36,7 @@ const EditBookPage = () => {
   const handleChange = (e) => {
     setFormData((prev) => ({
       ...prev,
-      [e.target.name]: e.target.value
+      [e.target.name]: e.target.value,
     }));
   };
 
@@ -41,37 +44,58 @@ const EditBookPage = () => {
     e.preventDefault();
     try {
       await axios.put(`/api/books/${id}`, formData, {
-        headers: { Authorization: `Bearer ${token}` }
+        headers: { Authorization: `Bearer ${token}` },
       });
       navigate('/profile');
     } catch (err) {
       console.error('Error updating book:', err);
+      alert('Failed to update book.');
     }
   };
 
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center h-[70vh] text-gray-600">
+        Loading book details...
+      </div>
+    );
+  }
+
   return (
-    <div className="max-w-md mx-auto p-6 bg-white shadow rounded mt-6">
-      <h2 className="text-xl font-bold mb-4">Edit Book</h2>
-      <form onSubmit={handleSubmit} className="space-y-4">
-        {['title', 'author', 'genre', 'condition', 'price', 'image'].map((field) => (
-          <div key={field}>
-            <label className="block font-medium mb-1 capitalize">{field}</label>
-            <input
-              type="text"
-              name={field}
-              value={formData[field]}
-              onChange={handleChange}
-              className="w-full border px-3 py-2 rounded"
-              required
-            />
-          </div>
-        ))}
-        <button type="submit" className="bg-blue-600 text-white px-4 py-2 rounded">
-          Update Book
-        </button>
-      </form>
+    <div className="min-h-screen bg-gradient-to-b from-slate-100 to-slate-200 flex items-center justify-center px-4">
+      <div className="w-full max-w-lg bg-white rounded-2xl shadow-lg p-8">
+        <h2 className="text-2xl font-bold text-slate-800 mb-6 text-center">
+          ✏️ Edit Book
+        </h2>
+
+        <form onSubmit={handleSubmit} className="space-y-5">
+          {['title', 'author', 'genre', 'condition', 'price', 'image'].map((field) => (
+            <div key={field}>
+              <label className="block text-sm font-medium text-slate-700 mb-1 capitalize">
+                {field}
+              </label>
+              <input
+                type={field === 'price' ? 'number' : 'text'}
+                name={field}
+                value={formData[field]}
+                onChange={handleChange}
+                className="w-full border border-slate-300 px-4 py-2 rounded-lg focus:ring-2 focus:ring-slate-500 focus:border-slate-500 outline-none transition"
+                required
+              />
+            </div>
+          ))}
+
+          <button
+            type="submit"
+            className="w-full bg-slate-800 hover:bg-slate-900 text-white font-semibold py-3 rounded-lg shadow-md transition"
+          >
+            Update Book
+          </button>
+        </form>
+      </div>
     </div>
   );
 };
 
 export default EditBookPage;
+

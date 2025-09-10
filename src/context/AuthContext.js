@@ -33,7 +33,7 @@ export const AuthProvider = ({ children }) => {
 
      
      const res = await axios.post(
-  "https://book-bazaar-mern-backend.onrender.com/api/users/login",
+  "https://book-bazaar-mern-backend-updated.onrender.com/api/users/login",
   { email: email.trim(), password: password.trim() },
   { headers: { 'Content-Type': 'application/json' } }
 );
@@ -50,7 +50,7 @@ export const AuthProvider = ({ children }) => {
         throw new Error('Login failed: token not received');
       }
 
-      return { token, user }; // return data for immediate use
+      return { token, user }; 
     } catch (err) {
       console.error('Login error:', err.response?.data || err.message);
       throw err;

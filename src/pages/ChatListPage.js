@@ -10,7 +10,7 @@ const ChatListPage = () => {
   useEffect(() => {
     const fetchChatUsers = async () => {
       try {
-        const res = await axios.get('https://book-bazaar-mern-backend.onrender.com/api/messages/chat-users', {
+        const res = await axios.get('https://book-bazaar-mern-backend-updated.onrender.com/api/messages/chat-users', {
           headers: {
             Authorization: `Bearer ${token}`,
           },

@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { useAuth } from '../context/AuthContext';
-import BASE_URL from '../base_url';
+
 const BookForm = ({ books = [] }) => {
   const { token } = useAuth(); 
   const [formData, setFormData] = useState({
@@ -34,7 +34,7 @@ const BookForm = ({ books = [] }) => {
 
     try {
       const res = await axios.post(
-        `${BASE_URL}/books/create`,
+        "https://book-bazaar-mern-backend-updated.onrender.com/api/books/create",
         formData,
         {
           headers: {
@@ -127,7 +127,7 @@ const BookForm = ({ books = [] }) => {
   onChange={(e) => setFormData({ ...formData, sellerEmail: e.target.value })}
 />
 
-      <button
+    <button
         type="submit"
         className="bg-blue-500 text-white px-4 py-2 rounded"
       >

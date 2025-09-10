@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 
 const Register = () => {
   const [name, setName] = useState('');
@@ -18,18 +19,15 @@ const Register = () => {
     }
 
     try {
-      const response = await fetch(
-        'https://book-bazaar-mern-backend.onrender.com/api/users/register',
-        {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            username: trimmedUsername,
-            email: trimmedEmail,
-            password: trimmedPassword,
-          }),
-        }
-      );
+      const response = await fetch('https://book-bazaar-mern-backend-updated.onrender.com/api/users/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          username: trimmedUsername,
+          email: trimmedEmail,
+          password: trimmedPassword,
+        }),
+      });
 
       const data = await response.json();
 
@@ -40,7 +38,6 @@ const Register = () => {
       alert('Registration successful!');
       console.log('Registered user:', data);
       localStorage.setItem('token', data.token);
-
     } catch (error) {
       alert('Registration error: ' + error.message);
       console.error('Registration error:', error);
@@ -48,56 +45,56 @@ const Register = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <div className="w-full max-w-md p-8 bg-white rounded shadow">
-        <h2 className="text-2xl font-bold mb-6 text-center">Register</h2>
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <label>Username:</label>
-            <input
-              type="text"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              required
-              className="w-full border p-2 rounded"
-              placeholder="Your username"
-            />
-          </div>
-          <div>
-            <label>Email:</label>
-            <input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-              className="w-full border p-2 rounded"
-              placeholder="you@gmail.com"
-            />
-          </div>
-          <div>
-            <label>Password:</label>
-            <input
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-              className="w-full border p-2 rounded"
-              placeholder="Your password"
-            />
-          </div>
+    <div className="flex items-center justify-center min-h-screen bg-slate-100 px-4">
+      <div className="w-full max-w-md bg-white shadow-lg rounded-2xl p-8 mt-20">
+        <h2 className="text-2xl font-bold text-center mb-6 text-gray-800">
+          Register
+        </h2>
+        <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+          <input
+            type="text"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            required
+            placeholder="Username"
+            className="border rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-slate-500"
+          />
+          <input
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+            placeholder="Email"
+            className="border rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-slate-500"
+          />
+          <input
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+            placeholder="Password"
+            className="border rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-slate-500"
+          />
           <button
             type="submit"
-            className="w-full bg-yellow-600 text-white py-2 rounded hover:bg-green-700"
+            className="bg-slate-800 hover:bg-slate-900 transition text-white font-semibold py-3 rounded-lg shadow-md"
           >
             Register
           </button>
         </form>
+        <p className="text-center text-sm text-gray-600 mt-4">
+          Already have an account?{' '}
+          <Link to="/login" className="text-slate-800 hover:underline font-medium">
+            Login here
+          </Link>
+        </p>
       </div>
     </div>
   );
 };
 
 export default Register;
+
 
 
 

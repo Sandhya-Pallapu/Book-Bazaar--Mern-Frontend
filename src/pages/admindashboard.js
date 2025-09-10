@@ -10,10 +10,10 @@ const AdminDashboard = () => {
   const [editBook, setEditBook] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  const backendURL = 'https://book-bazaar-mern-backend.onrender.com';
+  const backendURL = 'https://book-bazaar-mern-backend-updated.onrender.com';
   const headers = { Authorization: `Bearer ${token}` };
 
-  // Fetch users and books
+  
   const fetchData = async () => {
     setLoading(true);
     try {
@@ -33,7 +33,6 @@ const AdminDashboard = () => {
     }
   };
 
-  // Delete user
   const handleDeleteUser = async (userId) => {
     if (!window.confirm('Are you sure you want to delete this user?')) return;
     try {
@@ -45,7 +44,6 @@ const AdminDashboard = () => {
     }
   };
 
-  // Delete book
   const handleDeleteBook = async (bookId) => {
     if (!window.confirm('Delete this book?')) return;
     try {
@@ -57,12 +55,8 @@ const AdminDashboard = () => {
     }
   };
 
-  // Open edit book modal
-  const handleUpdateBook = (book) => {
-    setEditBook(book);
-  };
+  const handleUpdateBook = (book) => setEditBook(book);
 
-  // Submit updated book data
   const handleBookUpdateSubmit = async (updatedData) => {
     try {
       await axios.put(`${backendURL}/api/admin/books/${editBook._id}`, updatedData, { headers });
@@ -81,70 +75,84 @@ const AdminDashboard = () => {
   }, [token]);
 
   if (loading) {
-    return <p className="text-center mt-10">Loading dashboard...</p>;
+    return (
+      <div className="flex justify-center items-center min-h-screen bg-slate-100">
+        <p className="text-slate-600 text-lg animate-pulse">Loading dashboard...</p>
+      </div>
+    );
   }
 
   return (
-    <div className="p-6 max-w-5xl mx-auto">
-      <h1 className="text-3xl font-bold mb-6">Admin Dashboard</h1>
+    <div className="min-h-screen bg-slate-100 p-6 pt-20">
+      <div className="max-w-7xl mx-auto">
+        <h1 className="text-3xl font-bold text-slate-800 mb-8">Admin Dashboard</h1>
 
-      {/* Users Section */}
-      <div className="bg-white p-4 rounded shadow mb-6">
-        <h3 className="text-xl font-semibold mb-2">Users ({users.length})</h3>
-        {users.length === 0 ? (
-          <p>No users found.</p>
-        ) : (
-          <ul className="space-y-2">
-            {users.map((user) => (
-              <li key={user._id} className="flex justify-between items-center border-b pb-1">
-                <span>{user.name || user.username} - {user.email}</span>
-                <button
-                  className="bg-red-500 text-white px-3 py-1 rounded"
-                  onClick={() => handleDeleteUser(user._id)}
-                >
-                  Remove
-                </button>
-              </li>
-            ))}
-          </ul>
-        )}
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+
+
+          <div className="bg-white p-6 rounded-xl shadow-lg">
+            <h3 className="text-xl font-semibold mb-4 text-slate-700">Users ({users.length})</h3>
+            {users.length === 0 ? (
+              <p className="text-gray-500">No users found.</p>
+            ) : (
+              <ul className="divide-y divide-gray-200">
+                {users.map((user) => (
+                  <li key={user._id} className="flex justify-between items-center py-3">
+                    <div>
+                      <p className="font-medium text-slate-800">{user.name || user.username}</p>
+                      <p className="text-sm text-gray-500">{user.email}</p>
+                    </div>
+                    <button
+                      className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg shadow-sm transition"
+                      onClick={() => handleDeleteUser(user._id)}
+                    >
+                      Remove
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+
+
+          <div className="bg-white p-6 rounded-xl shadow-lg">
+            <h3 className="text-xl font-semibold mb-4 text-slate-700">Books ({books.length})</h3>
+            {books.length === 0 ? (
+              <p className="text-gray-500">No books found.</p>
+            ) : (
+              <ul className="divide-y divide-gray-200">
+                {books.map((book) => (
+                  <li key={book._id} className="flex justify-between items-center py-3">
+                    <div>
+                      <p className="font-medium text-slate-800">{book.title}</p>
+                      <p className="text-sm text-gray-500">
+                        {book.author} — ₹{book.price}
+                      </p>
+                    </div>
+                    <div className="flex space-x-2">
+                      <button
+                        className="bg-slate-700 hover:bg-slate-800 text-white px-4 py-2 rounded-lg shadow-sm transition"
+                        onClick={() => handleUpdateBook(book)}
+                      >
+                        Update
+                      </button>
+                      <button
+                        className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg shadow-sm transition"
+                        onClick={() => handleDeleteBook(book._id)}
+                      >
+                        Delete
+                      </button>
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+        </div>
       </div>
 
-      {/* Books Section */}
-      <div className="bg-white p-4 rounded shadow">
-        <h3 className="text-xl font-semibold mb-2">Books ({books.length})</h3>
-        {books.length === 0 ? (
-          <p>No books found.</p>
-        ) : (
-          <ul className="space-y-2">
-            {books.map((book) => (
-              <li key={book._id} className="border-b pb-2">
-                <div className="flex justify-between items-center">
-                  <div>
-                    <strong>{book.title}</strong> by {book.author} — ₹{book.price}
-                  </div>
-                  <div className="space-x-2">
-                    <button
-                      className="bg-yellow-400 text-black px-3 py-1 rounded"
-                      onClick={() => handleUpdateBook(book)}
-                    >
-                      Update
-                    </button>
-                    <button
-                      className="bg-red-500 text-white px-3 py-1 rounded"
-                      onClick={() => handleDeleteBook(book._id)}
-                    >
-                      Delete
-                    </button>
-                  </div>
-                </div>
-              </li>
-            ))}
-          </ul>
-        )}
-      </div>
-
-      {/* Edit Book Modal */}
+ 
       {editBook && (
         <BookModal
           initialData={editBook}
@@ -157,6 +165,8 @@ const AdminDashboard = () => {
 };
 
 export default AdminDashboard;
+
+
 
 
 

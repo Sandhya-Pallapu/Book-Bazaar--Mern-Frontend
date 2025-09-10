@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { toast } from 'react-toastify';
 
@@ -27,16 +27,20 @@ const Login = () => {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100">
-      <div className="w-full max-w-md bg-white shadow-lg rounded-2xl p-8">
-        <h2 className="text-2xl font-bold text-center mb-6 text-gray-800">
-          Login
+    <div className="min-h-screen bg-gradient-to-br from-slate-100 via-slate-200 to-slate-300 flex items-center justify-center px-4 pt-24">
+ 
+      <div className="w-full max-w-md bg-white shadow-xl rounded-2xl p-8">
+        <h2 className="text-3xl font-extrabold text-center mb-6 text-slate-800">
+          Welcome Back
         </h2>
+        <p className="text-center text-slate-500 mb-6">
+          Please login to continue
+        </p>
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
           <input
             type="email"
             placeholder="Email"
-            className="border rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-yellow-500"
+            className="border border-slate-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
@@ -44,24 +48,36 @@ const Login = () => {
           <input
             type="password"
             placeholder="Password"
-            className="border rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-yellow-500"
+            className="border border-slate-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
           />
           <button
             type="submit"
-            className="bg-yellow-600 hover:bg-yellow-700 transition text-white font-semibold py-3 rounded-lg"
+            className="bg-slate-800 hover:bg-slate-900 transition text-white font-semibold py-3 rounded-lg shadow-md"
           >
             Login
           </button>
         </form>
+
+        <p className="text-center text-sm text-slate-600 mt-6">
+          New user?{' '}
+          <Link to="/register" className="text-blue-600 hover:underline font-medium">
+            Register here
+          </Link>
+        </p>
       </div>
     </div>
   );
 };
 
 export default Login;
+
+
+
+
+
 
 
 

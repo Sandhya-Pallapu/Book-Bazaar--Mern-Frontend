@@ -17,7 +17,7 @@ const WishListPage = () => {
 
     const fetchWishlist = async () => {
       try {
-        const res = await axios.get('https://book-bazaar-mern-backend.onrender.com/api/wishlist', {
+        const res = await axios.get('https://book-bazaar-mern-backend-updated.onrender.com/api/wishlist', {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -38,7 +38,7 @@ const WishListPage = () => {
 
   const removeFromWishlist = async (bookId) => {
     try {
-      await axios.delete(`https://book-bazaar-mern-backend.onrender.com/api/wishlist/remove/${bookId}`, {
+      await axios.delete(`https://book-bazaar-mern-backend-updated.onrender.com/api/wishlist/remove/${bookId}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -50,17 +50,20 @@ const WishListPage = () => {
   };
 
   return (
-    <div className="p-6">
-      <h2 className="text-2xl font-bold mb-4">My Wishlist</h2>
+    <div className="min-h-screen bg-slate-100 p-6">
+      <h2 className="text-3xl font-bold mb-6 text-slate-800">My Wishlist</h2>
 
       {loading ? (
-        <p>Loading wishlist...</p>
+        <p className="text-slate-600">Loading wishlist...</p>
       ) : wishlistBooks.length === 0 ? (
-        <p>No books in wishlist</p>
+        <p className="text-slate-600">No books in wishlist</p>
       ) : (
         <ul className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {wishlistBooks.filter(Boolean).map((book) => (
-            <li key={book._id} className="border p-4 rounded shadow bg-white">
+            <li
+              key={book._id}
+              className="border p-4 rounded-xl shadow bg-white hover:shadow-lg transition"
+            >
               {book.image && (
                 <img
                   src={book.image}
@@ -68,14 +71,14 @@ const WishListPage = () => {
                   className="w-full h-48 object-cover rounded mb-3"
                 />
               )}
-              <h3 className="text-xl font-semibold">{book.title}</h3>
-              <p className="text-gray-700">Author: {book.author}</p>
-              <p className="text-sm text-gray-500">Genre: {book.genre}</p>
-              <p className="text-sm text-gray-500">Condition: {book.condition}</p>
-              <p className="text-sm text-gray-500 mb-2">Price: ₹{book.price}</p>
+              <h3 className="text-xl font-semibold text-slate-800">{book.title}</h3>
+              <p className="text-slate-600">Author: {book.author}</p>
+              <p className="text-sm text-slate-500">Genre: {book.genre}</p>
+              <p className="text-sm text-slate-500">Condition: {book.condition}</p>
+              <p className="text-sm text-slate-700 font-medium mb-3">Price: ₹{book.price}</p>
               <button
                 onClick={() => removeFromWishlist(book._id)}
-                className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600"
+                className="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition"
               >
                 Remove
               </button>
@@ -88,3 +91,5 @@ const WishListPage = () => {
 };
 
 export default WishListPage;
+
+

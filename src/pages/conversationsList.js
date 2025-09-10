@@ -10,7 +10,7 @@ const ConversationsList = () => {
   useEffect(() => {
     const fetchConversations = async () => {
       try {
-        const res = await axios.get(`https://book-bazaar-mern-backend.onrender.com/${user._id}`, {
+        const res = await axios.get(`https://book-bazaar-mern-backend-updated.onrender.com/${user._id}`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },

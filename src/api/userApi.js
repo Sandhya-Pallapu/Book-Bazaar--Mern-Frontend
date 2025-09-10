@@ -2,7 +2,7 @@
 import axios from "axios";
 
 const API = axios.create({
-  baseURL: "https://book-bazaar-mern-backend.onrender.com/api",
+  baseURL: "https://book-bazaar-mern-backend-updated.onrender.com/api",
   withCredentials: true,
 });
 

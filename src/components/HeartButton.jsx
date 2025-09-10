@@ -52,7 +52,7 @@ const HeartButton = ({ book }) => {
   return (
     <button
       onClick={handleWishlist}
-      className="absolute top-2 right-2 text-xl transition-transform hover:scale-110"
+      className="text-xl transition-transform hover:scale-110"
     >
       {added ? <FaHeart className="text-red-500" /> : <FaRegHeart className="text-red-500" />}
     </button>
@@ -60,4 +60,5 @@ const HeartButton = ({ book }) => {
 };
 
 export default HeartButton;
+
 

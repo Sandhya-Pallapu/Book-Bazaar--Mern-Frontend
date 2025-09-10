@@ -1,77 +1,64 @@
-import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
-import { FaHeart, FaUserCircle } from 'react-icons/fa';
-import logo from '../assets/logo.png';
-import SearchBar from './Searchbar';  
+import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { FaHome, FaBook, FaInbox, FaHeart, FaBars, FaTimes, FaUserCircle, FaTachometerAlt } from "react-icons/fa";
+import { useAuth } from "../context/AuthContext";
 
 const Navbar = () => {
-  const { user, logout } = useAuth();
-  const navigate = useNavigate();
+  const [menuOpen, setMenuOpen] = useState(false);
   const [showDropdown, setShowDropdown] = useState(false);
 
+  const { user, logout } = useAuth();
+  const navigate = useNavigate();
 
-  const [searchTerm, setSearchTerm] = useState("");
+  const toggleMenu = () => setMenuOpen(!menuOpen);
+  const toggleDropdown = () => setShowDropdown(!showDropdown);
 
   const handleLogout = () => {
     logout();
-    navigate('/login');
-  };
-
-  const toggleDropdown = () => {
-    setShowDropdown(!showDropdown);
+    navigate("/login");
   };
 
   const firstLetter = user?.email?.charAt(0).toUpperCase();
 
   return (
-    <nav className="bg-yellow-400 text-black h-16 shadow-md flex items-center">
-      <div className="container mx-auto flex justify-between items-center px-6">
+    <nav className="bg-slate-800 text-white shadow-sm w-full z-50">
+      <div className="container mx-auto flex justify-between items-center px-6 h-16">
+   
+        <div className="text-2xl md:text-3xl font-bold tracking-wide">
+          <Link to="/">Book Bazaar</Link>
+        </div>
 
-        <Link to="/" className="flex items-center">
-          <img 
-            src={logo} 
-            alt="Book Bazaar" 
-            className="h-20 w-auto object-contain"
-          />
-        </Link>
 
-        
+        <div className="hidden md:flex items-center space-x-4">
+          <Link to="/" className="flex items-center space-x-1 hover:text-gray-500">
+            <FaHome /> <span>Home</span>
+          </Link>
+          <Link to="/post-book" className="flex items-center space-x-1 hover:text-gray-500">
+            <FaBook /> <span>Post</span>
+          </Link>
+          <Link to="/inbox" className="flex items-center space-x-1 hover:text-gray-500">
+            <FaInbox /> <span>Inbox</span>
+          </Link>
 
-        <div className="flex items-center space-x-6 relative text-sm md:text-base font-medium">
-          <Link to="/" className="hover:text-gray-700 transition">Home</Link>
-
-          {user && user.role !== 'admin' && (
-            <Link to="/post-book" className="hover:text-gray-700 transition">Post</Link>
-          )}
-
-          {user && user.role !== 'admin' && (
-            <Link to="/wishlist" className="hover:text-gray-700 flex items-center space-x-1 transition">
-              <FaHeart className="text-red-500" />
-              <span>Wishlist</span>
+    
+          {user?.role !== "admin" && (
+            <Link to="/wishlist" className="flex items-center space-x-1 hover:text-gray-500">
+              <FaHeart /> <span>Wishlist</span>
             </Link>
           )}
 
-          {user && (
-            <Link to="/inbox" className="hover:text-gray-700 transition">Inbox</Link>
-          )}
-
-          {user?.role === 'admin' && (
-            <Link to="/admin" className="font-semibold hover:text-gray-700 transition">
-              Admin Dashboard
+          {user?.role === "admin" && (
+            <Link to="/admin" className="flex items-center space-x-1 hover:text-gray-500">
+              <FaTachometerAlt /> <span>Dashboard</span>
             </Link>
           )}
 
-          {!user ? (
-            <>
-              <Link to="/login" className="hover:text-gray-700 transition">Login</Link>
-              <Link to="/register" className="hover:text-gray-700 transition">Register</Link>
-            </>
-          ) : (
+
+          {user ? (
             <div className="relative">
               <button
                 onClick={toggleDropdown}
-                className="bg-white text-red-600 w-9 h-9 rounded-full flex items-center justify-center font-bold hover:bg-gray-200 shadow-sm"
+                className="bg-gray-200 text-black w-9 h-9 rounded-full flex items-center justify-center font-bold hover:bg-gray-300 transition"
               >
                 {firstLetter || <FaUserCircle />}
               </button>
@@ -94,12 +81,87 @@ const Navbar = () => {
                 </div>
               )}
             </div>
+          ) : (
+            <Link to="/login" className="px-3 py-1 border border-black rounded hover:bg-gray-100">
+              Login
+            </Link>
           )}
         </div>
+
+        <div className="md:hidden flex items-center space-x-2">
+          {user && (
+            <button
+              onClick={toggleDropdown}
+              className="bg-gray-200 text-black w-9 h-9 rounded-full flex items-center justify-center font-bold hover:bg-gray-300 transition"
+            >
+              {firstLetter || <FaUserCircle />}
+            </button>
+          )}
+          <button onClick={toggleMenu} className="text-black focus:outline-none">
+            {menuOpen ? <FaTimes size={24} /> : <FaBars size={24} />}
+          </button>
+        </div>
       </div>
+
+
+      {menuOpen && (
+        <div className="md:hidden bg-gray-100 px-6 py-4 flex flex-col space-y-4 border-t border-gray-200">
+          <Link to="/" className="flex items-center space-x-2 hover:text-gray-500" onClick={toggleMenu}>
+            <FaHome /> <span>Home</span>
+          </Link>
+          <Link to="/post-book" className="flex items-center space-x-2 hover:text-gray-500" onClick={toggleMenu}>
+            <FaBook /> <span>Post</span>
+          </Link>
+          <Link to="/inbox" className="flex items-center space-x-2 hover:text-gray-500" onClick={toggleMenu}>
+            <FaInbox /> <span>Inbox</span>
+          </Link>
+
+          {user?.role !== "admin" && (
+            <Link to="/wishlist" className="flex items-center space-x-2 hover:text-gray-500" onClick={toggleMenu}>
+              <FaHeart /> <span>Wishlist</span>
+            </Link>
+          )}
+
+        
+          {user?.role === "admin" && (
+            <Link to="/admin" className="flex items-center space-x-2 hover:text-gray-500" onClick={toggleMenu}>
+              <FaTachometerAlt /> <span>Dashboard</span>
+            </Link>
+          )}
+
+          {user && (
+            <>
+              <Link to="/profile" className="hover:text-gray-500" onClick={toggleMenu}>
+                Profile
+              </Link>
+              <button onClick={handleLogout} className="hover:text-gray-500 text-left">
+                Logout
+              </button>
+            </>
+          )}
+        </div>
+      )}
     </nav>
   );
 };
 
 export default Navbar;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 

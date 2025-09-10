@@ -9,7 +9,7 @@ const MyListingsPage = () => {
 
   useEffect(() => {
     const fetchBooks = async () => {
-      const res = await axios.get('https://book-bazaar-mern-backend.onrender.com/api/books/user', {
+      const res = await axios.get('https://book-bazaar-mern-backend-updated.onrender.com/api/books/user', {
         headers: { Authorization: `Bearer ${user.token}` },
       });
       setBooks(res.data);

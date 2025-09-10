@@ -2,7 +2,7 @@
 import axios from "axios";
 
 const instance = axios.create({
-  baseURL: process.env.REACT_APP_API_URL || "https://book-bazaar-mern-backend.onrender.com/api",
+  baseURL: process.env.REACT_APP_API_URL || "https://book-bazaar-mern-backend-updated.onrender.com",
   withCredentials: true,
 });
 

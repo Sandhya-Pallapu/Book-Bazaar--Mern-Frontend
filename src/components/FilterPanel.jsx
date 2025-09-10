@@ -1,7 +1,13 @@
 import React from 'react';
 
 const FilterPanel = ({ filters, onFilterChange }) => {
-  const genres = ['Fiction', 'Competitive', 'Science', 'History', ' Electrical Enginnering'];
+  const genres = [
+    'Fiction',
+    'Competitive',
+    'Science',
+    'History',
+    'Electrical Engineering',
+  ];
   const conditions = ['New', 'Used'];
 
   const handleChange = (e) => {
@@ -10,43 +16,55 @@ const FilterPanel = ({ filters, onFilterChange }) => {
   };
 
   return (
-    <div className="bg-white p-4 rounded shadow-md">
-      <h2 className="text-lg font-semibold mb-4">Filter By</h2>
+    <div className="bg-sky-10  p-6 rounded-2xl shadow-lg border border-gray-200 w-64">
+      <h2 className="text-lg font-semibold mb-5 text-gray-800 border-b pb-2">
+        Filter Books
+      </h2>
 
-      {/* Genre */}
-      <div className="mb-4">
-        <label className="block font-medium mb-1">Genre</label>
+      <div className="mb-5">
+        <label className="block text-sm font-medium text-gray-700 mb-2">
+          Genre
+        </label>
         <select
           name="genre"
           value={filters.genre}
           onChange={handleChange}
-          className="w-full border rounded p-2"
+          className="w-full border-gray-300 focus:ring-2 focus:ring-green-500 focus:border-green-500 rounded-lg p-2 text-sm"
         >
           <option value="">All</option>
           {genres.map((genre) => (
-            <option key={genre} value={genre}>{genre}</option>
-          ))}
-        </select>
-      </div>
-      
-      <div className="mb-4">
-        <label className="block font-medium mb-1">Condition</label>
-        <select
-          name="condition"
-          value={filters.condition}
-          onChange={handleChange}
-          className="w-full border rounded p-2"
-        >
-          <option value="">All</option>
-          {conditions.map((cond) => (
-            <option key={cond} value={cond}>{cond}</option>
+            <option key={genre} value={genre}>
+              {genre}
+            </option>
           ))}
         </select>
       </div>
 
-      {/* Price Range */}
-      <div className="mb-4">
-        <label className="block font-medium mb-1">Price Range</label>
+
+      <div className="mb-5">
+        <label className="block text-sm font-medium text-gray-700 mb-2">
+          Condition
+        </label>
+        <select
+          name="condition"
+          value={filters.condition}
+          onChange={handleChange}
+          className="w-full border-gray-300 focus:ring-2 focus:ring-green-500 focus:border-green-500 rounded-lg p-2 text-sm"
+        >
+          <option value="">All</option>
+          {conditions.map((cond) => (
+            <option key={cond} value={cond}>
+              {cond}
+            </option>
+          ))}
+        </select>
+      </div>
+
+
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-2">
+          Price Range
+        </label>
         <div className="flex gap-2">
           <input
             type="number"
@@ -54,7 +72,7 @@ const FilterPanel = ({ filters, onFilterChange }) => {
             placeholder="Min"
             value={filters.minPrice}
             onChange={handleChange}
-            className="w-1/2 border rounded p-2"
+            className="w-1/2 border-gray-300 focus:ring-2 focus:ring-green-500 focus:border-green-500 rounded-lg p-2 text-sm"
           />
           <input
             type="number"
@@ -62,7 +80,7 @@ const FilterPanel = ({ filters, onFilterChange }) => {
             placeholder="Max"
             value={filters.maxPrice}
             onChange={handleChange}
-            className="w-1/2 border rounded p-2"
+            className="w-1/2 border-gray-300 focus:ring-2 focus:ring-green-500 focus:border-green-500 rounded-lg p-2 text-sm"
           />
         </div>
       </div>
@@ -71,3 +89,4 @@ const FilterPanel = ({ filters, onFilterChange }) => {
 };
 
 export default FilterPanel;
+
