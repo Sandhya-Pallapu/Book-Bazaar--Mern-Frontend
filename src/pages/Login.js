@@ -6,17 +6,18 @@ import { toast } from 'react-toastify';
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const { login, user } = useAuth(); 
+  const { login } = useAuth(); 
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     try {
-      await login(email, password);
+      // ✅ Get logged in user directly
+      const loggedInUser = await login(email, password);
       toast.success('Login successful!');
-      
-      if (user?.role === 'admin') {
+
+      if (loggedInUser?.role === 'admin') {
         navigate('/admin/dashboard');
       } else {
         navigate('/');
@@ -27,15 +28,15 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-100 via-slate-200 to-slate-300 flex items-center justify-center px-4 pt-24">
- 
-      <div className="w-full max-w-md bg-white shadow-xl rounded-2xl p-8">
+    <div className="min-h-screen bg-gradient-to-br from-slate-100 via-slate-200 to-slate-300 flex justify-center px-4 pt-24 overflow-y-auto">
+      <div className="w-full max-w-md bg-white shadow-xl rounded-2xl p-8 my-10">
         <h2 className="text-3xl font-extrabold text-center mb-6 text-slate-800">
           Welcome Back
         </h2>
         <p className="text-center text-slate-500 mb-6">
           Please login to continue
         </p>
+
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
           <input
             type="email"
@@ -73,6 +74,7 @@ const Login = () => {
 };
 
 export default Login;
+
 
 
 
